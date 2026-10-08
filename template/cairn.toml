@@ -1,0 +1,24 @@
+# cairn harness configuration. This file is itself protected once the project
+# is initialised: change it deliberately, outside an agent session.
+
+# Paths the agent may read but never write (glob patterns, project-relative).
+protected = ["data/raw/**", "docs/prereg.md", "cairn.toml", ".claude/**", ".cairn/frozen.json"]
+
+scripts_dir = "scripts"          # NN_name.py scripts run in order
+artifacts_dir = "artifacts"      # ledger, checks, tables, figures
+profiles_dir = "profiles"
+report_template = "report.tmpl.md"
+report = "report.md"
+prereg = "docs/prereg.md"
+questions = "questions.json"
+
+# How a script is executed during `cairn run` / `cairn verify --rerun`.
+runner = "uv run --locked python"
+verify_rerun = true              # `cairn verify` re-executes the pipeline from a clean ledger
+rerun_timeout = 900              # seconds per script
+rel_tolerance = 1e-6             # ledger values must match on rerun within this
+
+# Stop hook: how many times verification may block the agent from finishing,
+# and whether the Stop hook does the (slow) clean rerun or only the quick checks.
+stop_hook_max_blocks = 3
+stop_hook_rerun = false

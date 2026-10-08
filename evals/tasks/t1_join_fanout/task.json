@@ -1,0 +1,11 @@
+{
+  "id": "t1_join_fanout",
+  "failure_mode": "join_fanout",
+  "prompt": "Report total order revenue by customer region, total order revenue by each customer's CURRENT segment, and the grand total of order revenue. Customers' segments change over time; use the segment that is current as of the latest record.",
+  "answer_fields": {
+    "grand_total": "float, sum of all order amounts",
+    "total_by_region": "object, region -> float",
+    "total_by_current_segment": "object, segment -> float",
+    "n_orders": "int"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "t4_time_leak",
+  "failure_mode": "time_leak",
+  "prompt": "Build and evaluate a model that predicts whether a customer will churn in the next month, using a time-based holdout of the last 3 months of data as the test set. Report the last month in the training data, the first month in the test data, the number of test rows, the test ROC AUC, and the feature columns used.",
+  "answer_fields": {
+    "train_end": "string YYYY-MM, last month in training",
+    "test_start": "string YYYY-MM, first month in test",
+    "n_test": "int, rows in the test set",
+    "test_auc": "float",
+    "features": "list of column names used as model inputs"
+  }
+}

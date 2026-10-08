@@ -1,0 +1,15 @@
+{
+  "id": "t5_censored_units",
+  "failure_mode": "censored_values_and_units",
+  "prompt": "Summarise arsenic concentrations in groundwater from the monitoring results provided. Report: the number of distinct wells, the number of samples, the number of censored (non-detect) results, the share of samples above 1.0 ug/L, the median concentration in ug/L, whether the arithmetic mean is identifiable from these data, and, if you report a mean, the method used to handle non-detects.",
+  "answer_fields": {
+    "n_wells": "int",
+    "n_samples": "int",
+    "n_censored": "int, results reported as non-detects",
+    "share_above_1": "float in [0,1], share of samples with concentration > 1.0 ug/L",
+    "median_ugL": "float",
+    "mean_identifiable": "bool",
+    "mean_ugL": "float or null",
+    "mean_method": "string or null, e.g. 'Kaplan-Meier', 'ROS', 'interval bounds', 'substitution'"
+  }
+}

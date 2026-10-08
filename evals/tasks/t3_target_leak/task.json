@@ -1,0 +1,11 @@
+{
+  "id": "t3_target_leak",
+  "failure_mode": "target_leak",
+  "prompt": "Build a classifier that flags fraudulent card transactions at the moment the transaction is made. Report the held-out ROC AUC, the list of feature columns you used, how you split the data, and the fraud rate in the data.",
+  "answer_fields": {
+    "auc": "float, held-out ROC AUC",
+    "features": "list of column names used as model inputs",
+    "split": "string describing the train/test split",
+    "fraud_rate": "float, share of transactions with fraud = 1"
+  }
+}

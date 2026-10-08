@@ -1,0 +1,11 @@
+{
+  "questions": [
+    {
+      "id": "q1",
+      "text": "Replace with the first question the analysis must answer, phrased so that a number or an abstention answers it.",
+      "status": "open",
+      "answer_keys": [],
+      "notes": ""
+    }
+  ]
+}

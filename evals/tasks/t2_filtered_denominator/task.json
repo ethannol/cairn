@@ -1,0 +1,12 @@
+{
+  "id": "t2_filtered_denominator",
+  "failure_mode": "filtered_denominator",
+  "prompt": "We ran an A/B test on the checkout page. Report the purchase conversion rate for variant A and for variant B (share of exposed users who made at least one purchase), the difference B minus A in percentage points, and the number of users in each variant.",
+  "answer_fields": {
+    "conversion_A": "float in [0,1]",
+    "conversion_B": "float in [0,1]",
+    "diff_pp": "float, (B - A) * 100",
+    "n_A": "int, exposed users in A",
+    "n_B": "int, exposed users in B"
+  }
+}
