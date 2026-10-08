@@ -90,8 +90,10 @@ def run(
     env["CAIRN_CHECKS"] = str(checks or cfg.checks_path)
     env["CAIRN_RERUN"] = "1" if ledger else "0"
     env["PYTHONHASHSEED"] = "0"
-    for lp in (ledger, checks):
-        if lp is not None and lp.exists():
+    # A run rebuilds the ledger and the checks log from scratch, whether it is
+    # the real one or a scratch pair used by `cairn verify`.
+    for lp in (ledger or cfg.ledger_path, checks or cfg.checks_path):
+        if lp.exists():
             lp.unlink()
     runner = shlex.split(cfg.runner)
     for script in ordered_scripts(cfg):
