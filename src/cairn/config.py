@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 import tomllib
 from dataclasses import dataclass, field
@@ -15,7 +16,7 @@ STATE_DIR = ".cairn"
 class Config:
     root: Path
     protected: list[str] = field(
-        default_factory=lambda: ["data/raw/**", "docs/prereg.md", "cairn.toml", ".claude/**"]
+        default_factory=lambda: ["data/raw/**", "cairn.toml", ".claude/**", ".cairn/frozen.json"]
     )
     scripts_dir: str = "scripts"
     artifacts_dir: str = "artifacts"
@@ -64,8 +65,22 @@ class Config:
     def scripts_path(self) -> Path:
         return self.root / self.scripts_dir
 
+    def frozen_files(self) -> set[str]:
+        """Root-relative paths hashed by `cairn freeze` (protected once frozen)."""
+        p = self.state_dir / "frozen.json"
+        if not p.is_file():
+            return set()
+        try:
+            return set(json.loads(p.read_text()).get("files", {}))
+        except (json.JSONDecodeError, AttributeError):
+            return set()
+
     def is_protected(self, path: Path | str) -> bool:
-        """True if `path` (absolute or root-relative) matches a protected pattern."""
+        """True if `path` matches a protected pattern or was frozen by `cairn freeze`.
+
+        The pre-registration is deliberately writable before the freeze and
+        read-only after it; raw data and harness config are always read-only.
+        """
         p = Path(path)
         if p.is_absolute():
             try:
@@ -76,7 +91,7 @@ class Config:
         for pattern in self.protected:
             if _glob_match(rel, pattern):
                 return True
-        return False
+        return rel in self.frozen_files()
 
 
 def _glob_match(rel: str, pattern: str) -> bool:

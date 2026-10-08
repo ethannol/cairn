@@ -2,7 +2,9 @@
 # is initialised: change it deliberately, outside an agent session.
 
 # Paths the agent may read but never write (glob patterns, project-relative).
-protected = ["data/raw/**", "docs/prereg.md", "cairn.toml", ".claude/**", ".cairn/frozen.json"]
+# docs/prereg.md is not listed: it is writable until `cairn freeze`, then every
+# file hashed into .cairn/frozen.json (prereg + raw data) becomes read-only.
+protected = ["data/raw/**", "cairn.toml", ".claude/**", ".cairn/frozen.json"]
 
 scripts_dir = "scripts"          # NN_name.py scripts run in order
 artifacts_dir = "artifacts"      # ledger, checks, tables, figures

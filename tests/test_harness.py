@@ -133,46 +133,30 @@ def test_questions_only_agent_fields_may_change(project):
 def test_pre_tool_use_denies_protected_writes(project, monkeypatch, capsys):
     cfg = config.load(project)
     raw = str(cfg.root / "data/raw/x.csv")
-    out = _hook(
-        handlers.pre_tool_use,
-        {"cwd": str(project), "tool_name": "Write", "tool_input": {"file_path": raw}},
-        monkeypatch,
-        capsys,
+    prereg_path = str(cfg.root / "docs/prereg.md")
+
+    def pre(tool, ti):
+        return _hook(
+            handlers.pre_tool_use,
+            {"cwd": str(project), "tool_name": tool, "tool_input": ti},
+            monkeypatch,
+            capsys,
+        )
+
+    assert pre("Write", {"file_path": raw})["hookSpecificOutput"]["permissionDecision"] == "deny"
+    assert pre("Write", {"file_path": str(cfg.root / "scripts/a.py")}) is None
+    # the pre-registration is writable until frozen, read-only afterwards
+    assert pre("Edit", {"file_path": prereg_path}) is None
+    assert pre("Bash", {"command": "sed -i 's/a/b/' docs/prereg.md"}) is None
+    write_prereg(project)
+    prereg.freeze(cfg)
+    assert (
+        pre("Edit", {"file_path": prereg_path})["hookSpecificOutput"]["permissionDecision"]
+        == "deny"
     )
+    out = pre("Bash", {"command": "sed -i 's/a/b/' docs/prereg.md"})
     assert out["hookSpecificOutput"]["permissionDecision"] == "deny"
-    out = _hook(
-        handlers.pre_tool_use,
-        {
-            "cwd": str(project),
-            "tool_name": "Write",
-            "tool_input": {"file_path": str(cfg.root / "scripts/a.py")},
-        },
-        monkeypatch,
-        capsys,
-    )
-    assert out is None
-    out = _hook(
-        handlers.pre_tool_use,
-        {
-            "cwd": str(project),
-            "tool_name": "Bash",
-            "tool_input": {"command": "sed -i 's/a/b/' docs/prereg.md"},
-        },
-        monkeypatch,
-        capsys,
-    )
-    assert out["hookSpecificOutput"]["permissionDecision"] == "deny"
-    out = _hook(
-        handlers.pre_tool_use,
-        {
-            "cwd": str(project),
-            "tool_name": "Bash",
-            "tool_input": {"command": "head data/raw/x.csv"},
-        },
-        monkeypatch,
-        capsys,
-    )
-    assert out is None
+    assert pre("Bash", {"command": "head data/raw/x.csv"}) is None
 
 
 def test_post_tool_use_blocks_bad_script_and_unresolved_placeholder(project, monkeypatch, capsys):

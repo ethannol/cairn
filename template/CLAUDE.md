@@ -10,7 +10,7 @@ the rules: hooks deny writes to protected paths, lint scripts on save, and run
 - Profile before you join or summarise: `cairn profile data/raw/*` and read `profiles/*.md`.
   Say what one row represents before you count anything.
 - Fill `docs/prereg.md` and `questions.json`, then run `cairn freeze` before computing results.
-  After freezing, label anything outside the plan as exploratory.
+  After freezing, the plan is read-only; label anything outside it as exploratory.
 - Every number in the report comes from code: `from cairn import record; record("key", value, n=...)`
   in a `scripts/NN_name.py` step, referenced as `{{key}}` in `report.tmpl.md`.
   Never type a result into the report, the ledger, or `questions.json`.
