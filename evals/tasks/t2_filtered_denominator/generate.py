@@ -23,16 +23,17 @@ def gen(workdir: Path, seed: int) -> dict:
     p_any = {"A": 0.55, "B": 0.62}  # share of users with any event
     p_buy_given_any = {"A": 0.12, "B": 0.11}  # B gets more browsers but not more buyers
     rows = []
-    for uid, v in zip(users.user_id, users.variant, strict=True):
+    exposed_at = pd.to_datetime(users.exposed_at)
+    for uid, v, t0 in zip(users.user_id, users.variant, exposed_at, strict=True):
         if rng.random() < p_any[v]:
-            k = rng.integers(1, 5)
-            for _ in range(k):
+            # every event happens after the user's exposure, so "purchased after
+            # exposure" and "purchased" are the same population
+            for _ in range(int(rng.integers(1, 5))):
                 rows.append(
                     {
                         "user_id": uid,
                         "event_type": "view",
-                        "ts": pd.Timestamp("2024-03-01")
-                        + pd.Timedelta(hours=int(rng.integers(0, 400))),
+                        "ts": t0 + pd.Timedelta(minutes=int(rng.integers(1, 14 * 24 * 60))),
                     }
                 )
             if rng.random() < p_buy_given_any[v]:
@@ -40,8 +41,7 @@ def gen(workdir: Path, seed: int) -> dict:
                     {
                         "user_id": uid,
                         "event_type": "purchase",
-                        "ts": pd.Timestamp("2024-03-01")
-                        + pd.Timedelta(hours=int(rng.integers(0, 400))),
+                        "ts": t0 + pd.Timedelta(minutes=int(rng.integers(1, 14 * 24 * 60))),
                     }
                 )
     events = pd.DataFrame(rows)

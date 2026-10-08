@@ -106,7 +106,7 @@ def run_claude(
         "--no-session-persistence",
     ]
     if condition == "bare":
-        cmd.append("--bare")
+        cmd.append("--safe-mode")  # no CLAUDE.md, skills, or hooks from any level; auth intact
     else:
         cmd += ["--setting-sources", "project"]
     env = dict(os.environ)

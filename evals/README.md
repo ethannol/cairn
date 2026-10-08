@@ -29,8 +29,9 @@ that cannot fail is not a grader.
 
 ## Conditions
 
-- `bare`: `claude -p --bare` in a directory holding only the data and the data dictionary.
-  No CLAUDE.md, skills, or hooks (user-level configuration is also skipped).
+- `bare`: `claude -p --safe-mode` in a directory holding only the data and the data
+  dictionary. No CLAUDE.md, skills, or hooks from any level. (`--bare` is not used: it
+  also skips the stored login.)
 - `cairn`: the same directory after `cairn init`, run with `--setting-sources project` so
   only the project's CLAUDE.md, skills, and hooks load.
 
