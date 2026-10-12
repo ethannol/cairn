@@ -1,0 +1,102 @@
+{
+  "duration_api_ms": 8352,
+  "stop_reason": "end_turn",
+  "session_id": "153cb826-97ee-4a10-87c3-916e593be943",
+  "total_cost_usd": 0.0444466,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 6408,
+    "cache_read_input_tokens": 43413,
+    "output_tokens": 1012,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 6408,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 294,
+        "cache_read_input_tokens": 16539,
+        "cache_creation_input_tokens": 742,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 742
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 6,
+      "outputTokens": 1012,
+      "cacheReadInputTokens": 43413,
+      "cacheCreationInputTokens": 6408,
+      "webSearchRequests": 0,
+      "costUSD": 0.0444466,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 0,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 3,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "I wrote `answer.json` with the revenue totals. The grand total is 394,971.69 across 5,000 orders.\n\nI took each customer's current segment from the segment row with the latest `valid_from`, so the join added no duplicate order rows. Region and segment totals each add up to the grand total.\n\n| Region | Revenue |\n|---|---|\n| east | 74,173.37 |\n| north | 121,738.90 |\n| south | 126,682.79 |\n| west | 72,376.63 |\n\n| Current segment | Revenue |\n|---|---|\n| basic | 126,918.79 |\n| plus | 137,079.56 |\n| premium | 130,973.34 |\n\nThe data checks came back clean:\n- Every order's customer exists in `customers.csv` and has a segment history.\n- Order IDs are unique.\n- No amounts are missing.\n- No customer has two segment rows with the same `valid_from`.",
+  "ttft_ms": 2457,
+  "type": "result",
+  "duration_ms": 9264,
+  "uuid": "5ea4db05-c1c5-4bf4-b04b-052385947bba",
+  "ttft_stream_ms": 1536,
+  "time_to_request_ms": 447,
+  "first_content_frame_ms": 1536,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "_rc": 0,
+  "_stderr_tail": "",
+  "_wall_s": 10.1
+}

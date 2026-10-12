@@ -1,0 +1,4 @@
+{"task": "t1_join_fanout", "failure_mode": "join_fanout", "condition": "bare", "trial": 0, "pass": true, "reasons": [], "cost_usd": 0.0444466, "turns": 3, "wall_s": 10.1, "rc": 0, "is_error": false}
+{"task": "t1_join_fanout", "failure_mode": "join_fanout", "condition": "cairn", "trial": 0, "pass": true, "reasons": [], "cost_usd": 0.1830228, "turns": 18, "wall_s": 46.7, "rc": 0, "is_error": false}
+{"task": "t2_filtered_denominator", "failure_mode": "filtered_denominator", "condition": "bare", "trial": 0, "pass": true, "reasons": [], "cost_usd": 0.0460386, "turns": 4, "wall_s": 11.3, "rc": 0, "is_error": false}
+{"task": "t2_filtered_denominator", "failure_mode": "filtered_denominator", "condition": "cairn", "trial": 0, "pass": true, "reasons": [], "cost_usd": 0.17823540000000002, "turns": 16, "wall_s": 49.2, "rc": 0, "is_error": false}

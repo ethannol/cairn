@@ -1,0 +1,15 @@
+{
+  "grand_total": 394971.69,
+  "total_by_region": {
+    "east": 74173.37,
+    "north": 121738.9,
+    "south": 126682.79,
+    "west": 72376.63
+  },
+  "total_by_current_segment": {
+    "basic": 126918.79,
+    "plus": 137079.56,
+    "premium": 130973.34
+  },
+  "n_orders": 5000
+}

@@ -32,6 +32,8 @@ class VerifyReport:
     warnings: list[str] = field(default_factory=list)
     stages: dict[str, str] = field(default_factory=dict)
     ran_at: str = ""
+    source_commit: str | None = None
+    checked_at: str = ""
 
     def fail(self, stage: str, msg: str) -> None:
         self.ok = False
@@ -77,7 +79,10 @@ def _close(a: Any, b: Any, rel: float) -> bool:
 
 
 def verify(cfg: Config, *, rerun: bool | None = None, quick: bool = False) -> VerifyReport:
-    rep = VerifyReport(ran_at=datetime.now(UTC).isoformat(timespec="seconds"))
+    checked_at = datetime.now(UTC).isoformat(timespec="seconds")
+    rep = VerifyReport(
+        ran_at=checked_at, checked_at=checked_at, source_commit=pipeline._git_head(cfg.root)
+    )
     do_rerun = cfg.verify_rerun if rerun is None else rerun
     if quick:
         do_rerun = False
@@ -167,6 +172,15 @@ def verify(cfg: Config, *, rerun: bool | None = None, quick: bool = False) -> Ve
                         "rerun",
                         f"{s.script} exited {s.returncode}: {_last_line(s.stderr_tail)}",
                     )
+            # Checks return recorded results rather than necessarily raising. A
+            # successful subprocess and unchanged numbers do not imply safe joins.
+            for c in read_checks(tmp_checks):
+                if not c["passed"]:
+                    message = f"{c['name']} ({c.get('source')}): {c['message']}"
+                    if c.get("severity") == "error":
+                        rep.fail("rerun", message)
+                    elif c.get("severity") == "warning":
+                        rep.warn("rerun", message)
             if res.ok:
                 fresh = numbers.load_ledger(tmp_ledger)
                 for k, entry in ledger.items():

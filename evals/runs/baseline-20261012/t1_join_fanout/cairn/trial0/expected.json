@@ -1,0 +1,32 @@
+{
+  "gold_answer": {
+    "grand_total": 394971.69,
+    "total_by_region": {
+      "east": 74173.37,
+      "north": 121738.9,
+      "south": 126682.79,
+      "west": 72376.63
+    },
+    "total_by_current_segment": {
+      "basic": 126918.79,
+      "plus": 137079.56,
+      "premium": 130973.34
+    },
+    "n_orders": 5000
+  },
+  "naive_answer": {
+    "grand_total": 708525.69,
+    "total_by_region": {
+      "east": 130455.78,
+      "north": 220117.18,
+      "south": 225100.41,
+      "west": 132852.32
+    },
+    "total_by_current_segment": {
+      "basic": 233854.71,
+      "plus": 241851.11,
+      "premium": 232819.87
+    },
+    "n_orders": 8953
+  }
+}

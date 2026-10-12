@@ -44,9 +44,33 @@ ledger, and verify pass before the agent may stop.
 ```
 uv sync --extra dev --extra evals
 uv run python evals/run.py --tasks all --conditions bare,cairn --trials 3 \
-    --model sonnet --max-turns 80 --budget 3.00
+    --model sonnet --max-turns 80 --budget 3.00 \
+    --expected-head "$(git rev-parse HEAD)" --fetch-time "<recorded UTC fetch time>"
 ```
 
 Costs are the CLI's client-side estimates, not billing. Report pass rate per failure mode
 with the number of trials, and keep the raw outputs; a result that cannot be inspected is
 not a result.
+
+## Recorded bounded baseline
+
+[The recorded baseline](runs/baseline-20261012/summary.md) covers the join and
+filtered-denominator tasks at a single seed under both conditions. Both
+conditions passed the selected tasks, and the harness cost more. It is a small
+smoke comparison, not evidence of general superiority or a full-suite result.
+The [manifest](runs/baseline-20261012/manifest.json) pins the exact source and
+runtime used; raw CLI metadata reports `claude-sonnet-5-5` for every session.
+Prompts, expected answers, per-trial input hashes, grades and produced scripts
+are retained. No older evaluation artifact was overwritten.
+
+## Revision preflight
+
+The runner refuses tracked-source edits, a different expected commit, a cairn
+runtime outside the checkout, and unsupported CLI condition flags before any
+model call. Its manifest records source hashes (including the runner, tasks,
+graders, template hooks and skills), Python/package versions, CLI version and
+help digest, fetch time, seeds and requested model. Each trial retains its
+prompt, expected answer, input hashes and raw CLI result, including reported
+model metadata. An unsupported CLI needs an explicit, reviewed protocol update;
+do not silently substitute another condition. Run the benchmark on the Mac mini,
+not the laptop. A running matrix retains its verified revision throughout.

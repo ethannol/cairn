@@ -1,0 +1,124 @@
+{
+  "duration_api_ms": 44505,
+  "stop_reason": "end_turn",
+  "session_id": "9c68eabb-5a0f-42f3-ad77-6988ef5a4ed2",
+  "total_cost_usd": 0.17823540000000002,
+  "usage": {
+    "input_tokens": 24,
+    "cache_creation_input_tokens": 18918,
+    "cache_read_input_tokens": 262677,
+    "output_tokens": 4998,
+    "output_tokens_details": {
+      "thinking_tokens": 366
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 18918,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 342,
+        "cache_read_input_tokens": 27032,
+        "cache_creation_input_tokens": 2759,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2759
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 24,
+      "outputTokens": 4998,
+      "cacheReadInputTokens": 262677,
+      "cacheCreationInputTokens": 18918,
+      "webSearchRequests": 0,
+      "costUSD": 0.17823540000000002,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 366,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [
+    {
+      "tool_name": "Bash",
+      "tool_use_id": "toolu_0151TNeWjtjA7FA7bmMK7Df5",
+      "tool_input": {
+        "command": "cairn profile data/raw/* >/dev/null 2>&1; cat profiles/*.md | head -80; cat docs/prereg.md questions.json; cat docs/decisions.md"
+      }
+    },
+    {
+      "tool_name": "Bash",
+      "tool_use_id": "toolu_01JWbR2aq4G3zGX6Xc4X3vKH",
+      "tool_input": {
+        "command": "cairn profile data/raw/exposures.csv data/raw/events.csv 2>&1 | tail -5; cat profiles/*.md | head -80; cat docs/prereg.md questions.json docs/decisions.md"
+      }
+    },
+    {
+      "tool_name": "Bash",
+      "tool_use_id": "toolu_01PKGoXVJ1mkRMZ5XuxZ9SpK",
+      "tool_input": {
+        "command": "cat > docs/prereg.md <<'E'\n# Pre-registration\n\n## Question\nPurchase conversion by variant (A/B) of the checkout A/B test, all exposed users in data/raw.\n\n## Primary quantity\nShare of exposed users with >=1 purchase event, per variant; difference B-A in percentage points.\n\n## Unit of analysis\nThe user (exposures.csv is one row per user). Multiple purchases collapse to one indicator.\n\n## Population and comparability\nDenominator: all rows of exposures.csv, including users with no events (absent from events.csv). No exclusions.\nPurchases counted at any time (no timestamp window defined in the dictionary).\n\n## Handling of missing and censored values\nNone expected; no censored measurements.\n\n## Decision rule\nReport point estimates and a two-proportion CI; abstain if variants have duplicate users or users in both.\n\n## Confirmatory vs exploratory\nThe above is confirmatory; anything else is exploratory.\nE\ncat > questions.json <<'E'\n{\"questions\":[{\"id\":\"q1\",\"text\":\"What is purchase conversion (share of exposed users with >=1 purchase) in A and B, and the B-A difference?\",\"status\":\"open\",\"answer_keys\":[],\"notes\":\"\"}]}\nE\nmkdir -p scripts; cat > scripts/10_conv.py <<'E'\nimport json, pandas as pd, numpy as np\nfrom cairn import record, denominator\nx=pd.read_csv(\"data/raw/exposures.csv\"); e=pd.read_csv(\"data/raw/events.csv\")\nbuyers=set(e.loc[e.event_type==\"purchase\",\"user_id\"])\nx[\"purchased\"]=x.user_id.isin(buyers)\ng=x.groupby(\"variant\").purchased.agg([\"mean\",\"sum\",\"count\"])\nfor v in \"AB\":\n    record(f\"conv.{v}\",float(g.loc[v,\"mean\"]),n=int(g.loc[v,\"count\"]))\n    record(f\"n.{v}\",int(g.loc[v,\"count\"]),n=int(g.loc[v,\"count\"]))\nd=(g.loc[\"B\",\"mean\"]-g.loc[\"A\",\"mean\"])*100\nrecord(\"diff_pp\",float(d),unit=\"pp\",n=len(x))\njson.dump({\"conversion_A\":float(g.loc[\"A\",\"mean\"]),\"conversion_B\":float(g.loc[\"B\",\"mean\"]),\"diff_pp\":float(d),\n \"n_A\":int(g.loc[\"A\",\"count\"]),\"n_B\":int(g.loc[\"B\",\"count\"])},open(\"answer.json\",\"w\"))\nprint(g,d)\nE\ncairn freeze 2>&1|tail -3; cairn run 2>&1|tail -8; cat answer.json"
+      }
+    }
+  ],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 16,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`cairn verify` now passes with 0 failures and 0 warnings, and `cairn render` wrote `report.md`. `answer.json` is unchanged and still correct.\n\nThe earlier failures came from the report template still holding its placeholder text. I rewrote `report.tmpl.md` so every number is a ledger value, and I marked `q1` as answered.\n\n| | Users | Conversion |\n|---|---|---|\n| A | 5,007 | 6.35% |\n| B | 4,993 | 7.25% |\n| B \u2212 A | | +0.90 pp |\n\nI also added an exploratory 95% interval for the difference to the script, so the report now carries one. It is a simple normal-approximation interval that treats users as independent, which fits one row per user. It is labelled exploratory because the pre-registration didn't include it. Its bounds are in the ledger and the rendered report.\n\nI didn't run `/review-analysis`, and I didn't add anything to `docs/decisions.md`. I also didn't check that users were randomised evenly across variants, and the report says so.",
+  "ttft_ms": 1430,
+  "type": "result",
+  "duration_ms": 48656,
+  "uuid": "baafdadf-97fc-4792-bebb-b82108de7007",
+  "ttft_stream_ms": 1111,
+  "time_to_request_ms": 60,
+  "first_content_frame_ms": 1112,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "_rc": 0,
+  "_stderr_tail": "",
+  "_wall_s": 49.2
+}

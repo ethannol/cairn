@@ -1,0 +1,124 @@
+{
+  "duration_api_ms": 40092,
+  "stop_reason": "end_turn",
+  "session_id": "d65b41a2-228d-4a71-a56a-7d14d479500d",
+  "total_cost_usd": 0.1830228,
+  "usage": {
+    "input_tokens": 30,
+    "cache_creation_input_tokens": 17706,
+    "cache_read_input_tokens": 336144,
+    "output_tokens": 4491,
+    "output_tokens_details": {
+      "thinking_tokens": 232
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 17706,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "global",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 371,
+        "cache_read_input_tokens": 28028,
+        "cache_creation_input_tokens": 551,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 551
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "modelUsage": {
+    "claude-sonnet-5-5": {
+      "inputTokens": 30,
+      "outputTokens": 4491,
+      "cacheReadInputTokens": 336144,
+      "cacheCreationInputTokens": 17706,
+      "webSearchRequests": 0,
+      "costUSD": 0.1830228,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 128000,
+      "thinkingTokens": 232,
+      "canonicalModel": "claude-sonnet-5-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  },
+  "permission_denials": [
+    {
+      "tool_name": "Bash",
+      "tool_use_id": "toolu_01NqYFQ1F9KfHc7tNm5gKBUA",
+      "tool_input": {
+        "command": "cairn profile data/raw/* >/dev/null 2>&1; cat profiles/*.md | head -80; cat docs/decisions.md scripts/README.md .claude/skills/analysis-workflow/joins.md | head -80"
+      }
+    },
+    {
+      "tool_name": "Bash",
+      "tool_use_id": "toolu_01YWh6tsDjiW2HYjzjTP8VZm",
+      "tool_input": {
+        "command": "cairn profile data/raw/customers.csv data/raw/customer_segments.csv data/raw/orders.csv 2>&1 | tail -5; cat profiles/*.md | head -90"
+      }
+    },
+    {
+      "tool_name": "Bash",
+      "tool_use_id": "toolu_01U99ziZAAKk6RbzayRsLL6V",
+      "tool_input": {
+        "command": "cat > scripts/00_profile.py <<'E'\nimport pandas as pd\nfor f in [\"customers\",\"customer_segments\",\"orders\"]:\n    d=pd.read_csv(f\"data/raw/{f}.csv\"); print(f,d.shape); print(d.head(3)); print(d.isna().sum().to_dict())\n    print(d.nunique().to_dict())\nE\npython3 scripts/00_profile.py"
+      }
+    }
+  ],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 18,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "`cairn verify` now passes with 0 failures and 0 warnings, and `report.md` is rendered. `answer.json` is written.\n\nI replaced the scaffold in `report.tmpl.md` with the actual question, method, results and caveats, and every number is a `{{key}}` from the ledger. I marked q1 as `answered` in `questions.json`.\n\nThe totals are unchanged:\n- **Grand total:** 394,971.69 USD across 5,000 orders.\n- **By region:** east 74,173.37, north 121,738.90, south 126,682.79, west 72,376.63.\n- **By current segment:** basic 126,918.79, plus 137,079.56, premium 130,973.34.\n\nThe report notes one caveat. Segment totals put all of a customer's 2024 orders under their latest segment, even if they were in a different segment when they ordered.\n\nThe report carries no uncertainty interval, because these are totals over all recorded orders rather than estimates from a sample.\n\nI haven't run `/review-analysis`, haven't written the row notes in `docs/decisions.md`, and haven't committed `.cairn/frozen.json`.",
+  "ttft_ms": 1290,
+  "type": "result",
+  "duration_ms": 46108,
+  "uuid": "22310af7-4c9a-426d-aa4e-810861fae576",
+  "ttft_stream_ms": 943,
+  "time_to_request_ms": 77,
+  "first_content_frame_ms": 943,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "_rc": 0,
+  "_stderr_tail": "",
+  "_wall_s": 46.7
+}

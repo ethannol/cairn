@@ -237,3 +237,20 @@ def test_cli_entrypoint_runs(project):
         env={**os.environ, "PYTHONPATH": os.environ["PYTHONPATH"]},
     )
     assert r.returncode == 0 and "frozen:    no" in r.stdout
+
+
+def test_clean_rerun_catches_new_nonraising_check_failure(project):
+    _seed(project)
+    cfg = config.load(project)
+    prereg.freeze(cfg)
+    assert cli.main(["run"]) == 0
+    assert verify(cfg, rerun=True).ok
+    # The old checks and ledger remain valid; only the fresh execution sees
+    # this newly added duplicate-key check. unique_key does not raise.
+    script = project / "scripts/10_analyse.py"
+    script.write_text(SCRIPT + "\nunique_key(res, 'well_id')\n")
+    rep = verify(cfg, rerun=True)
+    assert not rep.ok
+    assert any("rerun: unique_key(well_id)" in f for f in rep.failures)
+    assert rep.stages["checks"] == "pass"
+    assert rep.stages["rerun"] == "fail"

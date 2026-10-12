@@ -25,6 +25,9 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/cairn"]
 
+[tool.hatch.build.targets.wheel.force-include]
+"template" = "cairn/template"
+
 [tool.hatch.build.targets.sdist]
 include = ["src/cairn", "template", "README.md", "LICENSE"]
 
