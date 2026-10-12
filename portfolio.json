@@ -7,7 +7,7 @@
   "one_liner": "A verification-first harness for LLM agents doing data analysis: protected raw data, a pre-registration freeze, join and leakage checks, a numbers ledger that the report must draw from, and a clean re-execution before the agent may finish.",
   "aim": "Surround one analysis session with traceable checks, a frozen plan, a numbers ledger and clean re-execution, while stating the limits of hook and workflow enforcement.",
   "scope": "Protected raw data, a pre-registration freeze, join-cardinality and leakage checks, a numbers ledger that the report must draw from, script lint, a clean re-execution gate, and a trap suite of synthetic tasks with known answers and deterministic graders.",
-  "conclusion": "Sensors, template and trap suite are implemented and tested, and four studies in this portfolio were built under it. Pass rates for bare versus harnessed sessions on the trap suite are not yet published.",
+  "conclusion": "Sensors, template and trap suite are implemented and tested. Companion studies use its frozen plans, checks and ledgers. Pass rates for bare versus harnessed sessions on the trap suite are not yet published.",
   "ledger": {
     "type": "none"
   },
@@ -45,7 +45,7 @@
   "finding": [
     "The design rests on a research survey of agent systems, benchmarks and practitioner failure reports. Two independent MLE-bench ablations found that search policies and multi-agent orchestration add little once an agent runs as a single session with execution feedback, while every documented analysis failure is a missing sensor. So cairn is a thin loop with thick sensors: a PreToolUse hook that denies writes to raw data and the frozen plan, a skill-directed profile step before joins, a lint pass on every saved script, a ledger that every reported number must come from, and a Stop hook that blocks the turn for bounded attempts while verification fails.",
     "The evaluation is a trap suite: synthetic tasks, each with a known answer and one documented way to get a clean-running wrong one. Each grader is proven in the test suite to pass the gold answer and fail the trap answer. Benchmark results across the bare and cairn conditions are not yet published.",
-    "Three studies in this portfolio were built under it. Each froze its pre-registration before fitting, recorded every reported number through the ledger, and passed a clean re-execution. The blockers those studies hit, and the workarounds, are recorded in their decision logs; the most important is that the Claude Code hooks do not fire when the session runs from a parent directory, so those runs exercised the sensors manually rather than through the hooks."
+    "Companion studies froze their pre-registration before fitting, recorded reported numbers through the ledger, and used clean re-execution. Their blockers and workarounds are recorded in decision logs; runs launched from a parent directory exercised sensors manually because project hooks did not load. Counts include every sibling frozen-project manifest and do not imply every run had active hooks."
   ],
   "traps": [
     {

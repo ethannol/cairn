@@ -180,9 +180,20 @@ def main() -> int:
         ap.error(f"runtime cairn is not from this verified checkout: {source}")
     cli_version = subprocess.check_output(["claude", "--version"], text=True).strip()
     cli_help = subprocess.check_output(["claude", "--help"], text=True)
-    for flag in ["--safe-mode", "--setting-sources", "--max-budget-usd", "--max-turns"]:
+    for flag in ["--safe-mode", "--setting-sources", "--max-budget-usd"]:
         if flag not in cli_help:
             ap.error(f"installed Claude CLI lacks required flag {flag}")
+    # Some supported safety caps are hidden from --help. Probe the parser
+    # without initiating a session/model call, and record the result.
+    turns_probe = subprocess.run(
+        ["claude", "--max-turns", "1", "--safe-mode", "-p"],
+        input="",
+        capture_output=True,
+        text=True,
+    )
+    probe_message = turns_probe.stdout + turns_probe.stderr
+    if "Input must be provided" not in probe_message:
+        ap.error("could not verify --max-turns parser without a model call")
     tracked = subprocess.check_output(["git", "ls-files"], cwd=root, text=True).splitlines()
     hashes = {
         name: hashlib.sha256((root / name).read_bytes()).hexdigest()
@@ -205,6 +216,10 @@ def main() -> int:
             },
         },
         "claude_version": cli_version,
+        "max_turns_parser_probe": {
+            "returncode": turns_probe.returncode,
+            "message": probe_message.strip(),
+        },
         "claude_help_sha256": hashlib.sha256(cli_help.encode()).hexdigest(),
         "configuration": vars(args),
         "seeds": [1000 + n for n in range(args.trials)],
