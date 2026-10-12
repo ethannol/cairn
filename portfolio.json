@@ -13,14 +13,54 @@
     "type": "none"
   },
   "sources": {
-    "studies.frozen_projects": {"source": "count_files", "glob": "../*/.cairn/frozen.json"},
-    "baseline.runs": {"source": "glob_json", "glob": "evals/runs/baseline-20261012/*/*/trial*/grade.json", "path": "pass", "op": "count"},
-    "baseline.bare_passes": {"source": "glob_json", "glob": "evals/runs/baseline-20261012/*/bare/trial*/grade.json", "path": "pass", "op": "count_true"},
-    "baseline.bare_trials": {"source": "glob_json", "glob": "evals/runs/baseline-20261012/*/bare/trial*/grade.json", "path": "pass", "op": "count"},
-    "baseline.cairn_passes": {"source": "glob_json", "glob": "evals/runs/baseline-20261012/*/cairn/trial*/grade.json", "path": "pass", "op": "count_true"},
-    "baseline.cairn_trials": {"source": "glob_json", "glob": "evals/runs/baseline-20261012/*/cairn/trial*/grade.json", "path": "pass", "op": "count"},
-    "baseline.bare_cost": {"source": "glob_json", "glob": "evals/runs/baseline-20261012/*/bare/trial*/claude.json", "path": "total_cost_usd", "op": "sum", "round": 2},
-    "baseline.cairn_cost": {"source": "glob_json", "glob": "evals/runs/baseline-20261012/*/cairn/trial*/claude.json", "path": "total_cost_usd", "op": "sum", "round": 2}
+    "studies.frozen_projects": {
+      "source": "count_files",
+      "glob": "../*/.cairn/frozen.json"
+    },
+    "baseline.runs": {
+      "source": "glob_json",
+      "glob": "evals/runs/baseline-20261012/*/*/trial*/grade.json",
+      "path": "pass",
+      "op": "count"
+    },
+    "baseline.bare_passes": {
+      "source": "glob_json",
+      "glob": "evals/runs/baseline-20261012/*/bare/trial*/grade.json",
+      "path": "pass",
+      "op": "count_true"
+    },
+    "baseline.bare_trials": {
+      "source": "glob_json",
+      "glob": "evals/runs/baseline-20261012/*/bare/trial*/grade.json",
+      "path": "pass",
+      "op": "count"
+    },
+    "baseline.cairn_passes": {
+      "source": "glob_json",
+      "glob": "evals/runs/baseline-20261012/*/cairn/trial*/grade.json",
+      "path": "pass",
+      "op": "count_true"
+    },
+    "baseline.cairn_trials": {
+      "source": "glob_json",
+      "glob": "evals/runs/baseline-20261012/*/cairn/trial*/grade.json",
+      "path": "pass",
+      "op": "count"
+    },
+    "baseline.bare_cost": {
+      "source": "glob_json",
+      "glob": "evals/runs/baseline-20261012/*/bare/trial*/claude.json",
+      "path": "total_cost_usd",
+      "op": "sum",
+      "round": 2
+    },
+    "baseline.cairn_cost": {
+      "source": "glob_json",
+      "glob": "evals/runs/baseline-20261012/*/cairn/trial*/claude.json",
+      "path": "total_cost_usd",
+      "op": "sum",
+      "round": 2
+    }
   },
   "headline": [
     {
@@ -31,7 +71,7 @@
       }
     },
     {
-      "label": "Unit and harness tests",
+      "label": "Top-level test definitions",
       "value": {
         "source": "regex_count",
         "glob": "tests/test_*.py",
