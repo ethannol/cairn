@@ -5,12 +5,42 @@
   "status": "v0.1",
   "question": "Can one autonomous analysis session be surrounded by deterministic sensors it cannot edit, so that a clean-running wrong number cannot be reported as a finding?",
   "one_liner": "A verification-first harness for LLM agents doing data analysis: protected raw data, a pre-registration freeze, join and leakage checks, a numbers ledger that the report must draw from, and a clean re-execution before the agent may finish.",
-  "ledger": {"type": "none"},
+  "aim": "Build a harness in which one autonomous analysis session is surrounded by deterministic checks it cannot modify, so that no number can be reported without a reproducible, traceable origin and no question can be reworded after results are seen.",
+  "scope": "Protected raw data, a pre-registration freeze, join-cardinality and leakage checks, a numbers ledger that the report must draw from, script lint, a clean re-execution gate, and a trap suite of synthetic tasks with known answers and deterministic graders.",
+  "conclusion": "Sensors, template and trap suite are implemented and tested, and four studies in this portfolio were built under it. Pass rates for bare versus harnessed sessions on the trap suite are not yet published.",
+  "ledger": {
+    "type": "none"
+  },
   "headline": [
-    {"label": "Trap tasks with deterministic graders", "value": {"source": "count_files", "glob": "evals/tasks/*/task.json"}},
-    {"label": "Unit and harness tests", "value": {"source": "regex_count", "glob": "tests/test_*.py", "pattern": "^def test_"}},
-    {"label": "Architecture decision records", "value": {"source": "count_files", "glob": "docs/decisions/*.md"}},
-    {"label": "Studies run under the harness", "value": {"source": "count_files", "glob": "../*/.cairn/frozen.json"}}
+    {
+      "label": "Trap tasks with deterministic graders",
+      "value": {
+        "source": "count_files",
+        "glob": "evals/tasks/*/task.json"
+      }
+    },
+    {
+      "label": "Unit and harness tests",
+      "value": {
+        "source": "regex_count",
+        "glob": "tests/test_*.py",
+        "pattern": "^def test_"
+      }
+    },
+    {
+      "label": "Architecture decision records",
+      "value": {
+        "source": "count_files",
+        "glob": "docs/decisions/*.md"
+      }
+    },
+    {
+      "label": "Studies run under the harness",
+      "value": {
+        "source": "count_files",
+        "glob": "../*/.cairn/frozen.json"
+      }
+    }
   ],
   "finding": [
     "The design rests on a research survey of agent systems, benchmarks and practitioner failure reports. Two independent MLE-bench ablations found that search policies and multi-agent orchestration add little once an agent runs as a single session with execution feedback, while every documented analysis failure is a missing sensor. So cairn is a thin loop with thick sensors: a PreToolUse hook that denies writes to raw data and the frozen plan, a profile gate before any join, a lint pass on every saved script, a ledger that every reported number must come from, and a Stop hook that blocks the turn until a clean rerun reproduces the ledger.",
@@ -18,11 +48,26 @@
     "Three studies in this portfolio were built under it. Each froze its pre-registration before fitting, recorded every reported number through the ledger, and passed a clean re-execution. The blockers those studies hit, and the workarounds, are recorded in their decision logs; the most important is that the Claude Code hooks do not fire when the session runs from a parent directory, so those runs exercised the sensors manually rather than through the hooks."
   ],
   "traps": [
-    {"id": "join-fanout", "how": "checked_merge and join_check refuse a many-to-many join that was declared many-to-one; trap task t1."},
-    {"id": "target-leakage", "how": "target_proxy and time_leak sensors; trap tasks t3 and t4."},
-    {"id": "censoring", "how": "censored_values flags below-limit markers before a column is summarised; trap task t5."},
-    {"id": "framing", "how": "The pre-registration freeze and the question-list diff prevent rewording the question after seeing results; trap task t6 plants a leading prompt over a true null effect."},
-    {"id": "composition", "how": "Trap task t2: a filtered events table silently shrinks a conversion denominator."}
+    {
+      "id": "join-fanout",
+      "how": "checked_merge and join_check refuse a many-to-many join that was declared many-to-one; trap task t1."
+    },
+    {
+      "id": "target-leakage",
+      "how": "target_proxy and time_leak sensors; trap tasks t3 and t4."
+    },
+    {
+      "id": "censoring",
+      "how": "censored_values flags below-limit markers before a column is summarised; trap task t5."
+    },
+    {
+      "id": "framing",
+      "how": "The pre-registration freeze and the question-list diff prevent rewording the question after seeing results; trap task t6 plants a leading prompt over a true null effect."
+    },
+    {
+      "id": "composition",
+      "how": "Trap task t2: a filtered events table silently shrinks a conversion denominator."
+    }
   ],
   "figures": [],
   "not_claimed": [
@@ -30,13 +75,43 @@
     "The fresh-context reviewer is advisory, not a sensor."
   ],
   "documents": [
-    {"title": "Design", "path": "docs/design.md"},
-    {"title": "ADR 1: single session with deterministic sensors", "path": "docs/decisions/0001-single-session-with-deterministic-sensors.md"},
-    {"title": "ADR 2: numbers ledger", "path": "docs/decisions/0002-numbers-ledger.md"},
-    {"title": "ADR 3: pre-registration freeze", "path": "docs/decisions/0003-pre-registration-freeze.md"},
-    {"title": "Trap suite", "path": "evals/README.md"}
+    {
+      "title": "Design",
+      "path": "docs/design.md"
+    },
+    {
+      "title": "ADR 1: single session with deterministic sensors",
+      "path": "docs/decisions/0001-single-session-with-deterministic-sensors.md"
+    },
+    {
+      "title": "ADR 2: numbers ledger",
+      "path": "docs/decisions/0002-numbers-ledger.md"
+    },
+    {
+      "title": "ADR 3: pre-registration freeze",
+      "path": "docs/decisions/0003-pre-registration-freeze.md"
+    },
+    {
+      "title": "Trap suite",
+      "path": "evals/README.md"
+    }
   ],
-  "verification": {"tests": {"source": "regex_count", "glob": "tests/test_*.py", "pattern": "^def test_"}},
-  "stack": ["Claude Code hooks", "pre-registration hash", "numbers ledger", "script lint", "clean re-execution", "trap graders"],
-  "links": {"Repository": "https://github.com/ethannol/cairn"}
+  "verification": {
+    "tests": {
+      "source": "regex_count",
+      "glob": "tests/test_*.py",
+      "pattern": "^def test_"
+    }
+  },
+  "stack": [
+    "Claude Code hooks",
+    "pre-registration hash",
+    "numbers ledger",
+    "script lint",
+    "clean re-execution",
+    "trap graders"
+  ],
+  "links": {
+    "Repository": "https://github.com/ethannol/cairn"
+  }
 }
