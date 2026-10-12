@@ -6,8 +6,11 @@ uv run python evals/run.py --tasks all --conditions bare,cairn --trials 1 --mode
 from __future__ import annotations
 
 import argparse
+import hashlib
+import importlib.metadata
 import json
 import os
+import platform
 import shutil
 import subprocess
 import sys
@@ -151,15 +154,68 @@ def main() -> int:
     ap.add_argument("--max-turns", type=int, default=80)
     ap.add_argument("--budget", type=float, default=3.0, help="USD cap per trial")
     ap.add_argument("--timeout", type=int, default=1800, help="seconds per trial")
+    ap.add_argument("--expected-head", required=True, help="verified source commit; refuse drift")
+    ap.add_argument("--fetch-time", required=True, help="UTC time of baseline remote fetch")
     ap.add_argument("--out", default=None)
     ap.add_argument("--keep", action="store_true", help="keep workdirs")
     args = ap.parse_args()
 
+    selected = load_tasks(args.tasks)
+    conditions = args.conditions.split(",")
+    if not selected or any(c not in {"bare", "cairn"} for c in conditions):
+        ap.error("select existing tasks and bare/cairn conditions")
+    if args.trials < 1 or args.budget <= 0 or args.max_turns < 1:
+        ap.error("trials, budget and max-turns must be positive")
+    root = EVALS.parent
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
+    dirty = subprocess.check_output(
+        ["git", "status", "--porcelain", "--untracked-files=no"], cwd=root, text=True
+    )
+    if head != args.expected_head or dirty.strip():
+        ap.error("source revision differs from expected head or tracked files are dirty")
+    import cairn
+
+    source = Path(cairn.__file__).resolve()
+    if not source.is_relative_to(root):
+        ap.error(f"runtime cairn is not from this verified checkout: {source}")
+    cli_version = subprocess.check_output(["claude", "--version"], text=True).strip()
+    cli_help = subprocess.check_output(["claude", "--help"], text=True)
+    for flag in ["--safe-mode", "--setting-sources", "--max-budget-usd", "--max-turns"]:
+        if flag not in cli_help:
+            ap.error(f"installed Claude CLI lacks required flag {flag}")
+    tracked = subprocess.check_output(["git", "ls-files"], cwd=root, text=True).splitlines()
+    hashes = {
+        name: hashlib.sha256((root / name).read_bytes()).hexdigest()
+        for name in tracked
+        if (root / name).is_file()
+    }
+    manifest = {
+        "fetch_time_utc": args.fetch_time,
+        "git_head": head,
+        "recorded_at_utc": datetime.now(UTC).isoformat(),
+        "instrumentation_patch": None,
+        "source_sha256": hashes,
+        "runtime": {
+            "python": PY,
+            "version": platform.python_version(),
+            "cairn_source": str(source),
+            "packages": {
+                name: importlib.metadata.version(name)
+                for name in ["cairn", "pandas", "numpy", "scipy", "scikit-learn"]
+            },
+        },
+        "claude_version": cli_version,
+        "claude_help_sha256": hashlib.sha256(cli_help.encode()).hexdigest(),
+        "configuration": vars(args),
+        "seeds": [1000 + n for n in range(args.trials)],
+        "tool_configuration": "bare: safe-mode; cairn: project settings and bundled template",
+    }
     stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
     out_dir = Path(args.out) if args.out else EVALS / "runs" / stamp
     out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     rows: list[dict] = []
-    for task_dir in load_tasks(args.tasks):
+    for task_dir in selected:
         task = json.loads((task_dir / "task.json").read_text())
         for condition in args.conditions.split(","):
             for trial in range(args.trials):
@@ -172,6 +228,27 @@ def main() -> int:
                     workdir=workdir,
                     task=task["prompt"],
                     fields=json.dumps(task["answer_fields"], indent=2),
+                )
+                (trial_dir / "prompt.txt").write_text(prompt)
+                shutil.copy2(expected, trial_dir / "expected.json")
+                raw_hashes = {
+                    str(p.relative_to(workdir)): hashlib.sha256(p.read_bytes()).hexdigest()
+                    for p in sorted((workdir / "data/raw").rglob("*"))
+                    if p.is_file()
+                }
+                (trial_dir / "config.json").write_text(
+                    json.dumps(
+                        {
+                            "task": task_dir.name,
+                            "condition": condition,
+                            "seed": seed,
+                            "source_head": head,
+                            "model_requested": args.model,
+                            "raw_sha256": raw_hashes,
+                        },
+                        indent=2,
+                    )
+                    + "\n"
                 )
                 print(f"[{task_dir.name} | {condition} | trial {trial}] running...", flush=True)
                 res = run_claude(

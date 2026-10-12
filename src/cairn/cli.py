@@ -11,7 +11,14 @@ from pathlib import Path
 from cairn import __version__, config, numbers, pipeline, prereg, profile, questions
 from cairn.config import CONFIG_NAME, Config
 
-TEMPLATE_DIR = Path(__file__).resolve().parent.parent.parent / "template"
+# Wheels bundle the scaffold inside the package; source checkouts retain the
+# editable top-level template directory.
+_PACKAGE_TEMPLATE = Path(__file__).resolve().parent / "template"
+TEMPLATE_DIR = (
+    _PACKAGE_TEMPLATE
+    if _PACKAGE_TEMPLATE.is_dir()
+    else Path(__file__).resolve().parent.parent.parent / "template"
+)
 
 
 def _cfg(args: argparse.Namespace) -> Config:

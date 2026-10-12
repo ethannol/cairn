@@ -6,7 +6,7 @@ Data analysis agents rarely crash. They produce clean-running, plausible, wrong 
 a join that silently multiplies rows, a conversion rate over the wrong denominator, a
 feature recorded after the outcome, a non-detect treated as a measurement, a conclusion
 steered by how the question was asked. Expert review misses most of these. cairn gives one
-Claude Code session autonomy and surrounds it with deterministic sensors it cannot edit.
+Claude Code session autonomy and surrounds it with deterministic sensors and a reproducibility gate.
 
 Status: v0.1, October 2026. Sensors, template, and trap suite are implemented and tested;
 benchmark results across conditions are not yet published (see [Evaluation](#evaluation)).
@@ -16,7 +16,7 @@ benchmark results across conditions are not yet published (see [Evaluation](#eva
 | Sensor | What it catches | Mechanism |
 |---|---|---|
 | Protected paths | edits to raw data, the pre-registration, the harness config | PreToolUse hook denies the write |
-| Profile gate | joining or summarising before knowing row grain, keys, nulls, censoring markers | `cairn profile` writes `profiles/*.md`; skill step 1 |
+| Profile workflow step | joining or summarising before knowing row grain, keys, nulls, censoring markers | `cairn profile` writes `profiles/*.md`; skill step 1 |
 | Pre-registration freeze | changing the question, quantity, unit of analysis or decision rule after seeing results | `cairn freeze` hashes `docs/prereg.md` and raw data; refuses incomplete sections |
 | Question list | rewording or dropping a question to make it answerable | agent may change only `status`, `answer_keys`, `notes`; diff checked |
 | Data checks | join fan-out, dropped zeros, split overlap, future information, target proxies, non-detects | `cairn.join_check`, `checked_merge`, `split_overlap`, `time_leak`, `target_proxy`, `censored_values`, appended to `checks.jsonl` |
@@ -28,10 +28,22 @@ benchmark results across conditions are not yet published (see [Evaluation](#eva
 
 Everything above the last row is deterministic Python. The reviewer is advisory.
 
+## Enforcement boundaries
+
+The profile step is required by the analysis skill, but no hook proves the
+agent read a profile before computing. Write hooks reject recognised protected
+paths; shell-command detection is heuristic, not an operating-system sandbox.
+Freeze hashes catch changes to frozen inputs at verification. Checks only cover
+operations the scripts instrument, and warnings require review. The Stop hook
+blocks for a bounded number of attempts, then reports unresolved failures; it
+cannot guarantee a verified final answer. Launch Claude from the analysis root
+so project hooks load. The harness is intended for cooperative analysis agents,
+not hostile code with access to the same account.
+
 ## Quick start
 
 ```bash
-uv tool install git+https://github.com/<you>/cairn      # or: uv sync && uv run cairn
+uv tool install git+https://github.com/ethannol/cairn      # or: uv sync && uv run cairn
 cd my-analysis && cairn init .
 cp ~/downloads/results.csv data/raw/
 cairn profile data/raw/*                                 # read profiles/*.md first
@@ -93,7 +105,8 @@ estimated cost per trial:
 
 ```bash
 uv sync --extra dev --extra evals
-uv run python evals/run.py --tasks all --conditions bare,cairn --trials 3 --model sonnet
+uv run python evals/run.py --tasks all --conditions bare,cairn --trials 3 --model sonnet \
+    --expected-head "$(git rev-parse HEAD)" --fetch-time "<recorded UTC fetch time>"
 ```
 
 Results will be published here once run; raw outputs are kept beside every summary.
