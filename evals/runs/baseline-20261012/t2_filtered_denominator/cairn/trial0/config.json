@@ -1,0 +1,12 @@
+{
+  "task": "t2_filtered_denominator",
+  "condition": "cairn",
+  "seed": 1000,
+  "source_head": "5ac702db51fa44a0012f1d4fb8fcf831ad6a32b5",
+  "model_requested": "sonnet",
+  "raw_sha256": {
+    "data/raw/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "data/raw/events.csv": "f3742a5d1ad8d84c4be669c81d5ea10800694e2ec623090294fed81002dee252",
+    "data/raw/exposures.csv": "f534c8f4c2ad5ee9b74951b6285aba1d8bd369f73a09f2fa417d2b011804c396"
+  }
+}

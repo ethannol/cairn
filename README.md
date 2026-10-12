@@ -9,7 +9,8 @@ steered by how the question was asked. Expert review misses most of these. cairn
 Claude Code session autonomy and surrounds it with deterministic sensors and a reproducibility gate.
 
 Status: v0.1, October 2026. Sensors, template, and trap suite are implemented and tested;
-benchmark results across conditions are not yet published (see [Evaluation](#evaluation)).
+a small selected-task baseline is recorded; full-suite comparative performance
+is not established (see [Evaluation](#evaluation)).
 
 ## What it enforces
 
@@ -109,7 +110,14 @@ uv run python evals/run.py --tasks all --conditions bare,cairn --trials 3 --mode
     --expected-head "$(git rev-parse HEAD)" --fetch-time "<recorded UTC fetch time>"
 ```
 
-Results will be published here once run; raw outputs are kept beside every summary.
+The [bounded baseline](evals/runs/baseline-20261012/summary.md) exercised the join
+and filtered-denominator traps at one seed. Both bare and cairn passed both
+selected tasks; the harness cost more. This tiny sample provides no accuracy
+advantage and cannot establish full-suite performance. Its [source/runtime
+manifest](evals/runs/baseline-20261012/manifest.json), prompts, expected answers,
+raw CLI outputs, graders and scripts are retained beside the summary. The
+manifest pins the benchmark revision; later presentation changes do not alter
+that baseline.
 
 ## Design
 

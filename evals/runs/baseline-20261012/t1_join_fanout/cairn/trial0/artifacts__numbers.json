@@ -1,0 +1,50 @@
+{
+  "grand_total": {
+    "n": 5000,
+    "recorded_at": "2026-10-12T20:16:00+00:00",
+    "source": "20_analyse.py",
+    "value": 394971.69
+  },
+  "region.east": {
+    "n": 936,
+    "recorded_at": "2026-10-12T20:16:00+00:00",
+    "source": "20_analyse.py",
+    "value": 74173.37
+  },
+  "region.north": {
+    "n": 1555,
+    "recorded_at": "2026-10-12T20:16:00+00:00",
+    "source": "20_analyse.py",
+    "value": 121738.9
+  },
+  "region.south": {
+    "n": 1594,
+    "recorded_at": "2026-10-12T20:16:00+00:00",
+    "source": "20_analyse.py",
+    "value": 126682.79
+  },
+  "region.west": {
+    "n": 915,
+    "recorded_at": "2026-10-12T20:16:00+00:00",
+    "source": "20_analyse.py",
+    "value": 72376.63
+  },
+  "segment.basic": {
+    "n": 1603,
+    "recorded_at": "2026-10-12T20:16:00+00:00",
+    "source": "20_analyse.py",
+    "value": 126918.79
+  },
+  "segment.plus": {
+    "n": 1722,
+    "recorded_at": "2026-10-12T20:16:00+00:00",
+    "source": "20_analyse.py",
+    "value": 137079.56
+  },
+  "segment.premium": {
+    "n": 1675,
+    "recorded_at": "2026-10-12T20:16:00+00:00",
+    "source": "20_analyse.py",
+    "value": 130973.34
+  }
+}

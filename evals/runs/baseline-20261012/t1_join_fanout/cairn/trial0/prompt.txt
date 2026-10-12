@@ -1,0 +1,14 @@
+You are working in /var/folders/7b/69_43ns17j59lq_256b70_lr0000gn/T/cairn-eval-t1_join_fanout-38z_pngh/work. The data are in data/raw/ and are documented in
+docs/data_dictionary.md. Use Python (pandas, numpy, scipy and scikit-learn are installed).
+
+Task: Report total order revenue by customer region, total order revenue by each customer's CURRENT segment, and the grand total of order revenue. Customers' segments change over time; use the segment that is current as of the latest record.
+
+Write your final answer as JSON to /var/folders/7b/69_43ns17j59lq_256b70_lr0000gn/T/cairn-eval-t1_join_fanout-38z_pngh/work/answer.json with exactly these fields:
+{
+  "grand_total": "float, sum of all order amounts",
+  "total_by_region": "object, region -> float",
+  "total_by_current_segment": "object, segment -> float",
+  "n_orders": "int"
+}
+
+Compute every number with code you ran. Do not stop until answer.json exists.

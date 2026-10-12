@@ -1,0 +1,59 @@
+{
+  "conv.A": {
+    "n": 5007,
+    "recorded_at": "2026-10-12T20:17:15+00:00",
+    "source": "10_conv.py",
+    "value": 0.06351108448172559
+  },
+  "conv.B": {
+    "n": 4993,
+    "recorded_at": "2026-10-12T20:17:15+00:00",
+    "source": "10_conv.py",
+    "value": 0.07250150210294412
+  },
+  "diff_ci_high_pp": {
+    "n": 10000,
+    "recorded_at": "2026-10-12T20:17:15+00:00",
+    "source": "10_conv.py",
+    "unit": "pp",
+    "value": 1.8858140116247604
+  },
+  "diff_ci_low_pp": {
+    "n": 10000,
+    "recorded_at": "2026-10-12T20:17:15+00:00",
+    "source": "10_conv.py",
+    "unit": "pp",
+    "value": -0.08773048738105316
+  },
+  "diff_pp": {
+    "n": 10000,
+    "recorded_at": "2026-10-12T20:17:15+00:00",
+    "source": "10_conv.py",
+    "unit": "pp",
+    "value": 0.8990417621218536
+  },
+  "n.A": {
+    "n": 5007,
+    "recorded_at": "2026-10-12T20:17:15+00:00",
+    "source": "10_conv.py",
+    "value": 5007
+  },
+  "n.B": {
+    "n": 4993,
+    "recorded_at": "2026-10-12T20:17:15+00:00",
+    "source": "10_conv.py",
+    "value": 4993
+  },
+  "n.buyers": {
+    "n": 10000,
+    "recorded_at": "2026-10-12T20:17:15+00:00",
+    "source": "10_conv.py",
+    "value": 680
+  },
+  "n.total": {
+    "n": 10000,
+    "recorded_at": "2026-10-12T20:17:15+00:00",
+    "source": "10_conv.py",
+    "value": 10000
+  }
+}

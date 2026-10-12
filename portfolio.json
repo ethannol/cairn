@@ -3,13 +3,24 @@
   "title": "cairn",
   "kind": "harness",
   "status": "v0.1",
+  "strict_numbers": true,
   "question": "Can deterministic checks and clean re-execution make plausible analysis errors visible before findings are reported?",
   "one_liner": "A verification-first harness for LLM agents doing data analysis: protected raw data, a pre-registration freeze, join and leakage checks, a numbers ledger that the report must draw from, and a clean re-execution before the agent may finish.",
   "aim": "Surround one analysis session with traceable checks, a frozen plan, a numbers ledger and clean re-execution, while stating the limits of hook and workflow enforcement.",
   "scope": "Protected raw data, a pre-registration freeze, join-cardinality and leakage checks, a numbers ledger that the report must draw from, script lint, a clean re-execution gate, and a trap suite of synthetic tasks with known answers and deterministic graders.",
-  "conclusion": "Sensors, template and trap suite are implemented and tested. Companion studies use its frozen plans, checks and ledgers. Pass rates for bare versus harnessed sessions on the trap suite are not yet published.",
+  "conclusion": "Sensors, template and trap suite are implemented and tested. {{studies.frozen_projects}} companion directories contain frozen plans. The bounded baseline found identical pass counts on selected tasks, with higher harness cost; full-suite comparative performance is not established.",
   "ledger": {
     "type": "none"
+  },
+  "sources": {
+    "studies.frozen_projects": {"source": "count_files", "glob": "../*/.cairn/frozen.json"},
+    "baseline.runs": {"source": "glob_json", "glob": "evals/runs/baseline-20261012/*/*/trial*/grade.json", "path": "pass", "op": "count"},
+    "baseline.bare_passes": {"source": "glob_json", "glob": "evals/runs/baseline-20261012/*/bare/trial*/grade.json", "path": "pass", "op": "count_true"},
+    "baseline.bare_trials": {"source": "glob_json", "glob": "evals/runs/baseline-20261012/*/bare/trial*/grade.json", "path": "pass", "op": "count"},
+    "baseline.cairn_passes": {"source": "glob_json", "glob": "evals/runs/baseline-20261012/*/cairn/trial*/grade.json", "path": "pass", "op": "count_true"},
+    "baseline.cairn_trials": {"source": "glob_json", "glob": "evals/runs/baseline-20261012/*/cairn/trial*/grade.json", "path": "pass", "op": "count"},
+    "baseline.bare_cost": {"source": "glob_json", "glob": "evals/runs/baseline-20261012/*/bare/trial*/claude.json", "path": "total_cost_usd", "op": "sum", "round": 2},
+    "baseline.cairn_cost": {"source": "glob_json", "glob": "evals/runs/baseline-20261012/*/cairn/trial*/claude.json", "path": "total_cost_usd", "op": "sum", "round": 2}
   },
   "headline": [
     {
@@ -36,16 +47,19 @@
     },
     {
       "label": "Studies run under the harness",
-      "value": {
-        "source": "count_files",
-        "glob": "../*/.cairn/frozen.json"
-      }
+      "value": "studies.frozen_projects"
+    },
+    {
+      "label": "Recorded baseline model sessions",
+      "value": "baseline.runs",
+      "note": "Bare {{baseline.bare_passes}}/{{baseline.bare_trials}}; cairn {{baseline.cairn_passes}}/{{baseline.cairn_trials}} on selected traps"
     }
   ],
   "finding": [
     "The design rests on a research survey of agent systems, benchmarks and practitioner failure reports. Two independent MLE-bench ablations found that search policies and multi-agent orchestration add little once an agent runs as a single session with execution feedback, while every documented analysis failure is a missing sensor. So cairn is a thin loop with thick sensors: a PreToolUse hook that denies writes to raw data and the frozen plan, a skill-directed profile step before joins, a lint pass on every saved script, a ledger that every reported number must come from, and a Stop hook that blocks the turn for bounded attempts while verification fails.",
-    "The evaluation is a trap suite: synthetic tasks, each with a known answer and one documented way to get a clean-running wrong one. Each grader is proven in the test suite to pass the gold answer and fail the trap answer. Benchmark results across the bare and cairn conditions are not yet published.",
-    "Companion studies froze their pre-registration before fitting, recorded reported numbers through the ledger, and used clean re-execution. Their blockers and workarounds are recorded in decision logs; runs launched from a parent directory exercised sensors manually because project hooks did not load. Counts include every sibling frozen-project manifest and do not imply every run had active hooks."
+    "The evaluation is a trap suite: synthetic tasks, each with a known answer and one documented way to get a clean-running wrong one. Each grader is checked against gold and trap answers. A bounded selected-task baseline is recorded; a full-suite comparison is not yet published.",
+    "{{studies.frozen_projects}} companion project directories contain frozen plans. Their blockers and workarounds are recorded in decision logs; runs launched from a parent directory exercised sensors manually because project hooks did not load. This manifest count does not imply every run had active hooks.",
+    "The bounded recorded baseline exercised the join and filtered-denominator traps at a single seed. Bare sessions passed {{baseline.bare_passes}}/{{baseline.bare_trials}} and cairn sessions {{baseline.cairn_passes}}/{{baseline.cairn_trials}}; client-side cost estimates total {{baseline.bare_cost:.2f}} USD bare and {{baseline.cairn_cost:.2f}} USD cairn. This tiny selected-task sample shows no accuracy advantage and higher harness cost; it does not establish comparative performance across the full trap suite."
   ],
   "traps": [
     {
@@ -71,11 +85,19 @@
   ],
   "figures": [],
   "not_claimed": [
-    "No published pass rates yet for bare versus cairn conditions.",
+    "The small baseline is not a full-suite benchmark or evidence of general accuracy improvement.",
     "The fresh-context reviewer is advisory, not a sensor.",
     "Hooks are guardrails for cooperative agents, not a security sandbox; profiling is a workflow instruction, not an enforced read gate."
   ],
   "documents": [
+    {
+      "title": "Recorded bounded baseline",
+      "path": "evals/runs/baseline-20261012/summary.md"
+    },
+    {
+      "title": "Baseline source and runtime manifest",
+      "path": "evals/runs/baseline-20261012/manifest.json"
+    },
     {
       "title": "Design",
       "path": "docs/design.md"
@@ -98,6 +120,7 @@
     }
   ],
   "verification": {
+    "artifact": "reports/check-evidence.json",
     "tests": {
       "source": "regex_count",
       "glob": "tests/test_*.py",

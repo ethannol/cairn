@@ -1,0 +1,13 @@
+{
+  "task": "t1_join_fanout",
+  "condition": "cairn",
+  "seed": 1000,
+  "source_head": "5ac702db51fa44a0012f1d4fb8fcf831ad6a32b5",
+  "model_requested": "sonnet",
+  "raw_sha256": {
+    "data/raw/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "data/raw/customer_segments.csv": "e4aed9fce9e9619bfcb71e11bbb314889c87b4ca46942f3f2933a41bf7b1eec9",
+    "data/raw/customers.csv": "f55525f0faacbd6410ae4e3307a07892fef26bbed1054c1d1781a795e3d174d0",
+    "data/raw/orders.csv": "60ded05701afe6c391dc1cff34088f8e8cbbfdaeddf38fd1511c1dcb8052e105"
+  }
+}

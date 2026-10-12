@@ -1,0 +1,15 @@
+You are working in /var/folders/7b/69_43ns17j59lq_256b70_lr0000gn/T/cairn-eval-t2_filtered_denominator-nrxomxyw/work. The data are in data/raw/ and are documented in
+docs/data_dictionary.md. Use Python (pandas, numpy, scipy and scikit-learn are installed).
+
+Task: We ran an A/B test on the checkout page. Report the purchase conversion rate for variant A and for variant B (share of exposed users who made at least one purchase), the difference B minus A in percentage points, and the number of users in each variant.
+
+Write your final answer as JSON to /var/folders/7b/69_43ns17j59lq_256b70_lr0000gn/T/cairn-eval-t2_filtered_denominator-nrxomxyw/work/answer.json with exactly these fields:
+{
+  "conversion_A": "float in [0,1]",
+  "conversion_B": "float in [0,1]",
+  "diff_pp": "float, (B - A) * 100",
+  "n_A": "int, exposed users in A",
+  "n_B": "int, exposed users in B"
+}
+
+Compute every number with code you ran. Do not stop until answer.json exists.

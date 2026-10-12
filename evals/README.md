@@ -52,6 +52,17 @@ Costs are the CLI's client-side estimates, not billing. Report pass rate per fai
 with the number of trials, and keep the raw outputs; a result that cannot be inspected is
 not a result.
 
+## Recorded bounded baseline
+
+[The recorded baseline](runs/baseline-20261012/summary.md) covers the join and
+filtered-denominator tasks at a single seed under both conditions. Both
+conditions passed the selected tasks, and the harness cost more. It is a small
+smoke comparison, not evidence of general superiority or a full-suite result.
+The [manifest](runs/baseline-20261012/manifest.json) pins the exact source and
+runtime used; raw CLI metadata reports `claude-sonnet-5-5` for every session.
+Prompts, expected answers, per-trial input hashes, grades and produced scripts
+are retained. No older evaluation artifact was overwritten.
+
 ## Revision preflight
 
 The runner refuses tracked-source edits, a different expected commit, a cairn
