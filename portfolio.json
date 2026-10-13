@@ -9,6 +9,17 @@
   "aim": "Surround one analysis session with traceable checks, a frozen plan, a numbers ledger and clean re-execution, while stating the limits of hook and workflow enforcement.",
   "scope": "Protected raw data, a pre-registration freeze, join-cardinality and leakage checks, a numbers ledger that the report must draw from, script lint, a clean re-execution gate, and a trap suite of synthetic tasks with known answers and deterministic graders.",
   "conclusion": "Sensors, template and trap suite are implemented and tested. {{studies.frozen_projects}} companion directories contain frozen plans. The bounded baseline found identical pass counts on selected tasks, with higher harness cost; full-suite comparative performance is not established.",
+  "summary": {
+    "question": "How do you stop an AI analyst from reporting a plausible wrong number?",
+    "techniques": [
+      "Locked raw data and a frozen plan",
+      "Join and leakage checks",
+      "Numbers ledger that the report must draw from",
+      "Clean re-execution before finishing",
+      "Trap tasks with known answers"
+    ],
+    "result": "Works as a checklist enforced by code; the four studies were built inside it. A small benchmark showed no accuracy gain over an unguarded agent on the tasks tried."
+  },
   "ledger": {
     "type": "none"
   },
